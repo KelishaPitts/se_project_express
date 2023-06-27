@@ -79,45 +79,45 @@ const deleteItem = (req, res) => {
     });
 };
 const likeItem = (req, res) => ClothingItem.findByIdAndUpdate(
-    req.params.itemId,
-    { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
-    { new: true },
-  )
-    .orFail()
-    .then(() => {
-      res.send({ message: 'You liked an item.' });
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Invalid Id.' });
-      } else if (err.name === 'DocumentNotFoundError') {
-        res.status(NOT_FOUND).send({ message: 'Id not found.', err });
-      } else {
-        res
-          .status(SERVER_ERROR)
-          .send({ message: 'Server Error from likeItem' });
-      }
-    });
+  req.params.itemId,
+  { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
+  { new: true },
+)
+  .orFail()
+  .then(() => {
+  res.send({ message: 'You liked an item.' });
+  })
+  .catch((err) => {
+    if (err.name === 'ValidationError' || err.name === 'CastError') {
+      res.status(BAD_REQUEST).send({ message: 'Invalid Id.' });
+    } else if (err.name === 'DocumentNotFoundError') {
+      res.status(NOT_FOUND).send({ message: 'Id not found.', err });
+    } else {
+      res
+        .status(SERVER_ERROR)
+        .send({ message: 'Server Error from likeItem' });
+    }
+  });
 const dislikeItem = (req, res) => ClothingItem.findByIdAndUpdate(
-    req.params.itemId,
-    { $pull: { likes: req.user._id } }, // remove _id from the array
-    { new: true },
-  )
-    .orFail()
-    .then(() => {
-      res.send({ message: 'You disliked an item.' });
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Invalid Id.' });
-      } else if (err.name === 'DocumentNotFoundError') {
-        res.status(NOT_FOUND).send({ message: 'Id not found.', err });
-      } else {
-        res
-          .status(SERVER_ERROR)
-          .send({ message: 'Server Error from dislikedItem' });
+  req.params.itemId,
+  { $pull: { likes: req.user._id } }, // remove _id from the array
+  { new: true },
+)
+  .orFail()
+  .then(() => {
+    res.send({ message: 'You disliked an item.' });
+  })
+  .catch((err) => {
+    if (err.name === 'ValidationError' || err.name === 'CastError') {
+      res.status(BAD_REQUEST).send({ message: 'Invalid Id.' });
+    } else if (err.name === 'DocumentNotFoundError') {
+      res.status(NOT_FOUND).send({ message: 'Id not found.', err });
+    } else {
+      res
+        .status(SERVER_ERROR)
+        .send({ message: 'Server Error from dislikedItem' });
       }
-    });
+  });
 
 module.exports = {
   createItem,
