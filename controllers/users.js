@@ -38,11 +38,11 @@ const getUserId = (req, res) => {
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res
+        res
           .status(BAD_REQUEST)
           .send({ message: 'Invalid data passed through getUsers.', err });
       } else if (err.name === 'DocumentNotFoundError') {
-           res
+        res
           .status(NOT_FOUND)
           .send({ message: 'User with that Id not found.', err });
       } else {

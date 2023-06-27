@@ -14,7 +14,8 @@ const createItem = (req, res) => {
     weather,
     imageUrl,
     likes,
-    createAt } = req.body;
+    createAt }
+    = req.body;
 
   ClothingItem.create({
     name,
@@ -24,7 +25,7 @@ const createItem = (req, res) => {
     likes,
     createAt,
   })
-    .then(() => {
+    .then((item) => {
       console.log(item);
       res.send({ data: item });
     })
@@ -67,11 +68,11 @@ const deleteItem = (req, res) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(BAD_REQUEST).send({ message: 'Invalid Item Id.' });
       } else if (err.name === 'DocumentNotFoundError') {
-        return res
+           res
           .status(NOT_FOUND)
           .send({ message: 'Item with that Id not found.', err });
       } else {
-        res
+           res
           .status(SERVER_ERROR)
           .send({ message: 'Server Error from deleteItem' });
       }
@@ -81,7 +82,7 @@ const deleteItem = (req, res) => {
 const likeItem = (req, res) =>
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-    { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
+    { $addToSet: { likes: req.user._id }, }, // add _id to the array if it's not there yet
     { new: true }
   )
     .orFail()
@@ -103,7 +104,7 @@ const likeItem = (req, res) =>
 const dislikeItem = (req, res) =>
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-    { $pull: { likes: req.user._id } }, // remove _id from the array
+    { $pull: { likes: req.user._id }, }, // remove _id from the array
     { new: true }
   )
     .orFail()
@@ -114,7 +115,7 @@ const dislikeItem = (req, res) =>
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(BAD_REQUEST).send({ message: 'Invalid Id.' });
       } else if (err.name === 'DocumentNotFoundError') {
-        return res.status(NOT_FOUND).send({ message: 'Id not found.', err });
+        res.status(NOT_FOUND).send({ message: 'Id not found.', err });
       } else {
         res
           .status(SERVER_ERROR)
