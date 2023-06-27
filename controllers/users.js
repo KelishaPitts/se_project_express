@@ -46,7 +46,7 @@ const getUserId = (req, res) => {
           .status(NOT_FOUND)
           .send({ message: 'User with that Id not found.', err });
       } else {
-        return res.status(SERVER_ERROR).send({ message: 'Server Error', err });
+        res.status(SERVER_ERROR).send({ message: 'Server Error', err });
       }
     });
 };

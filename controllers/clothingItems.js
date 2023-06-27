@@ -14,8 +14,8 @@ const createItem = (req, res) => {
     weather,
     imageUrl,
     likes,
-    createAt }
-    = req.body;
+    createAt
+  } = req.body;
 
   ClothingItem.create({
     name,
@@ -63,27 +63,26 @@ const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then((item) => res.status(200).send({}))
+    .then(() => res.status(200).send({}))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(BAD_REQUEST).send({ message: 'Invalid Item Id.' });
       } else if (err.name === 'DocumentNotFoundError') {
-           res
+        res
           .status(NOT_FOUND)
           .send({ message: 'Item with that Id not found.', err });
       } else {
-           res
+        res
           .status(SERVER_ERROR)
           .send({ message: 'Server Error from deleteItem' });
       }
     });
 };
-
 const likeItem = (req, res) =>
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-    { $addToSet: { likes: req.user._id }, }, // add _id to the array if it's not there yet
-    { new: true }
+    { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
+    { new: true },
   )
     .orFail()
     .then(() => {
@@ -93,19 +92,18 @@ const likeItem = (req, res) =>
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(BAD_REQUEST).send({ message: 'Invalid Id.' });
       } else if (err.name === 'DocumentNotFoundError') {
-        return res.status(NOT_FOUND).send({ message: 'Id not found.', err });
+        res.status(NOT_FOUND).send({ message: 'Id not found.', err });
       } else {
         res
           .status(SERVER_ERROR)
           .send({ message: 'Server Error from likeItem' });
       }
     });
-
 const dislikeItem = (req, res) =>
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-    { $pull: { likes: req.user._id }, }, // remove _id from the array
-    { new: true }
+    { $pull: { likes: req.user._id } }, // remove _id from the array
+    { new: true },
   )
     .orFail()
     .then(() => {
