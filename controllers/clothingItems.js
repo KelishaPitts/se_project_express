@@ -85,7 +85,7 @@ const likeItem = (req, res) => ClothingItem.findByIdAndUpdate(
 )
   .orFail()
   .then(() => {
-  res.send({ message: 'You liked an item.' });
+    res.send({ message: 'You liked an item.' });
   })
   .catch((err) => {
     if (err.name === 'ValidationError' || err.name === 'CastError') {
@@ -116,7 +116,7 @@ const dislikeItem = (req, res) => ClothingItem.findByIdAndUpdate(
       res
         .status(SERVER_ERROR)
         .send({ message: 'Server Error from dislikedItem' });
-      }
+    }
   });
 
 module.exports = {
