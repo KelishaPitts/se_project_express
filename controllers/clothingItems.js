@@ -1,10 +1,10 @@
-const ClothingItem = require("../models/clothingItem");
+const ClothingItem = require('../models/clothingItem');
 const {
   BAD_REQUEST,
   FORBIDDEN,
   NOT_FOUND,
   SERVER_ERROR,
-} = require("../utils/errors");
+} = require('../utils/errors');
 
 const createItem = (req, res) => {
   console.log(req);
@@ -27,7 +27,7 @@ const createItem = (req, res) => {
     .catch((err) => {
       res
         .status(BAD_REQUEST)
-        .send({ message: "Invald data passed into create ClothingItem", err });
+        .send({ message: 'Invald data passed into create ClothingItem', err });
     });
 };
 const getItems = (req, res) => {
@@ -36,7 +36,7 @@ const getItems = (req, res) => {
     .catch((err) => {
       res
         .status(SERVER_ERROR)
-        .send({ message: "Server Error from getItems", err });
+        .send({ message: 'Server Error from getItems', err });
     });
 };
 
@@ -50,7 +50,7 @@ const updateItem = (req, res) => {
     .catch((err) => {
       res
         .status(SERVER_ERROR)
-        .send({ message: "Server Error from UpdateItem", err });
+        .send({ message: 'Server Error from UpdateItem', err });
     });
 };
 
@@ -60,16 +60,16 @@ const deleteItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send({}))
     .catch((err) => {
-      if (err.name === "ValidationError" || err.name === "CastError") {
-        res.status(BAD_REQUEST).send({ message: "Invalid Item Id." });
-      } else if (err.name === "DocumentNotFoundError") {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(BAD_REQUEST).send({ message: 'Invalid Item Id.' });
+      } else if (err.name === 'DocumentNotFoundError') {
         return res
           .status(NOT_FOUND)
-          .send({ message: "Item with that Id not found.", err });
+          .send({ message: 'Item with that Id not found.', err });
       } else {
         res
           .status(SERVER_ERROR)
-          .send({ message: "Server Error from deleteItem" });
+          .send({ message: 'Server Error from deleteItem' });
       }
     });
 };
@@ -82,17 +82,17 @@ const likeItem = (req, res) =>
   )
     .orFail()
     .then(() => {
-      res.send({ message: "You liked an item." });
+      res.send({ message: 'You liked an item.' });
     })
     .catch((err) => {
-      if (err.name === "ValidationError" || err.name === "CastError") {
-        res.status(BAD_REQUEST).send({ message: "Invalid Id." });
-      } else if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "Id not found.", err });
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(BAD_REQUEST).send({ message: 'Invalid Id.' });
+      } else if (err.name === 'DocumentNotFoundError') {
+        return res.status(NOT_FOUND).send({ message: 'Id not found.', err });
       } else {
         res
           .status(SERVER_ERROR)
-          .send({ message: "Server Error from likeItem" });
+          .send({ message: 'Server Error from likeItem' });
       }
     });
 
@@ -104,17 +104,17 @@ const dislikeItem = (req, res) =>
   )
     .orFail()
     .then(() => {
-      res.send({ message: "You disliked an item." });
+      res.send({ message: 'You disliked an item.' });
     })
     .catch((err) => {
-      if (err.name === "ValidationError" || err.name === "CastError") {
-        res.status(BAD_REQUEST).send({ message: "Invalid Id." });
-      } else if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "Id not found.", err });
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(BAD_REQUEST).send({ message: 'Invalid Id.' });
+      } else if (err.name === 'DocumentNotFoundError') {
+        return res.status(NOT_FOUND).send({ message: 'Id not found.', err });
       } else {
         res
           .status(SERVER_ERROR)
-          .send({ message: "Server Error from dislikedItem" });
+          .send({ message: 'Server Error from dislikedItem' });
       }
     });
 
