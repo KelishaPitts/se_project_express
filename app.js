@@ -12,6 +12,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db')
     console.log('Database connection error:', error);
   });
 
+
 app.use((req, res, next) => {
   console.log(res);
   req.user = {
