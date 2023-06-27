@@ -24,7 +24,7 @@ const createItem = (req, res) => {
     likes,
     createAt,
   })
-    .then((item) => {
+    .then(() => {
       console.log(item);
       res.send({ data: item });
     })

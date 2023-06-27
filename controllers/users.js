@@ -1,7 +1,6 @@
 const User = require('../models/user');
 const {
   BAD_REQUEST,
-  FORBIDDEN,
   NOT_FOUND,
   SERVER_ERROR,
 } = require('../utils/errors');
@@ -43,7 +42,7 @@ const getUserId = (req, res) => {
           .status(BAD_REQUEST)
           .send({ message: 'Invalid data passed through getUsers.', err });
       } else if (err.name === 'DocumentNotFoundError') {
-        return res
+           res
           .status(NOT_FOUND)
           .send({ message: 'User with that Id not found.', err });
       } else {
