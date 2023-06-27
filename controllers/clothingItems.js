@@ -14,7 +14,7 @@ const createItem = (req, res) => {
     weather,
     imageUrl,
     likes,
-    createAt
+    createAt,
   } = req.body;
 
   ClothingItem.create({
@@ -78,8 +78,7 @@ const deleteItem = (req, res) => {
       }
     });
 };
-const likeItem = (req, res) =>
-  ClothingItem.findByIdAndUpdate(
+const likeItem = (req, res) => ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
     { new: true },
@@ -99,8 +98,7 @@ const likeItem = (req, res) =>
           .send({ message: 'Server Error from likeItem' });
       }
     });
-const dislikeItem = (req, res) =>
-  ClothingItem.findByIdAndUpdate(
+const dislikeItem = (req, res) => ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } }, // remove _id from the array
     { new: true },
