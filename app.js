@@ -1,30 +1,35 @@
-const express = require('express');
-const mongoose = require('mongoose');
+const express = require("express");
+const mongoose = require("mongoose");
 
 const { PORT = 3001 } = process.env;
 const app = express();
 
-mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db'),
-  (r) => {
-    console.log('connect to database');
-  },
-  (err) => console.log('database error', err);
-
-app.use((req, res, next) => {
+function connectToDatabase() {
+  mongoose
+    .connect("mongodb://127.0.0.1:27017/wtwr_db")
+    .then(() => {
+      console.log("Connected to database");
+    })
+    .catch((err) => {
+      console.log("Database error", err);
+    });
+}
+connectToDatabase();
+app.use((req, next) => {
   req.user = {
-    _id: '5d8b8592978f8bd833ca8133',
+    _id: "5d8b8592978f8bd833ca8133",
   };
   next();
-  module.exports.createClothingItem = (req, res) => {
+  module.exports.createClothingItem = (req) => {
     console.log(req.user._id);
   };
 });
 
-const routes = require('./routes');
+const routes = require("./routes");
 app.use(express.json());
 app.use(routes);
 
 app.listen(PORT, () => {
   console.log(`App listening at port ${PORT}`);
-  console.log('It is alive!!!');
+  console.log("It is alive!!!");
 });
