@@ -32,7 +32,7 @@ const createItem = (req, res) => {
 const getItems = (req, res) => {
   console.log(req);
   ClothingItem.find({})
-    .then((items) => res.status(200).send(items))
+    .then((items) => res.send(items))
     .catch(() => {
       res.status(SERVER_ERROR).send({ message: "Server Error from getItems" });
     });
@@ -42,7 +42,7 @@ const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then(() => res.status(200).send({ message: "You deleted an item." }))
+    .then(() => res.send({ message: "You deleted an item." }))
     .catch((err) => {
       if (err.name === "ValidationError" || err.name === "CastError") {
         res.status(BAD_REQUEST).send({ message: "Invalid Item Id." });

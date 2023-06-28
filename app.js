@@ -1,5 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { limiter } = require("./utils/rateLimit");
+const helmet = require("helmet");
 
 const { PORT = 3001 } = process.env;
 const app = express();
@@ -12,7 +14,8 @@ mongoose
   .catch((error) => {
     console.log("Database connection error:", error);
   });
-
+app.use(limiter);
+app.use(helmet());
 app.use((req, res, next) => {
   console.log(res);
   req.user = {

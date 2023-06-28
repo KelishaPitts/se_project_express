@@ -27,7 +27,7 @@ const createUser = (req, res) => {
 const getUsers = (req, res) => {
   console.log(req);
   User.find({})
-    .then((items) => res.status(200).send(items))
+    .then((items) => res.send(items))
     .catch(() => {
       res.status(SERVER_ERROR).send({ message: "Server Error" });
     });
@@ -38,7 +38,7 @@ const getUserId = (req, res) => {
 
   User.findById(userId)
     .orFail()
-    .then((item) => res.status(200).send({ data: item }))
+    .then((item) => res.send({ data: item }))
     .catch((err) => {
       if (err.name === "ValidationError" || err.name === "CastError") {
         res
