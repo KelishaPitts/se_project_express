@@ -4,7 +4,7 @@ module.exports = {
     commonjs: true,
     es2021: true,
   },
-  extends: "airbnb-base",
+  extends: ["eslint:recommended", "airbnb-base", "prettier"],
   overrides: [
     {
       env: {
@@ -21,8 +21,5 @@ module.exports = {
   },
   rules: {
     "no-underscore-dangle": ["error", { allow: ["_id"] }],
-    indent: ["error", 4],
-    quotes: ["error", { allow: "double" }],
-    "prettier/prettier": "error",
   },
 };
