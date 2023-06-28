@@ -24,7 +24,7 @@ const createUser = (req, res) => {
     });
 };
 const getUsers = (req, res) => {
-  console.log(req)
+  console.log(req);
   User.find({})
     .then((items) => res.send(items))
     .catch(() => {
