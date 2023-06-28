@@ -11,8 +11,8 @@ mongoose
   .then(() => {
     console.log("Connected to the database");
   })
-  .catch((error) => {
-    console.log("Database connection error:", error);
+  .catch(() => {
+    console.log("Database connection error:");
   });
 app.use(limiter);
 app.use(helmet());
@@ -29,6 +29,4 @@ const routes = require("./routes");
 app.use(express.json());
 app.use(routes);
 app.listen(PORT, () => {
-  console.log(`App listening at port ${PORT}`);
-  console.log("It is alive!!!");
 });
