@@ -1,5 +1,7 @@
 const ClothingItem = require("../models/clothingItem");
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
+const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR, FORBIDDEN } = require("../utils/errors");
+const user = require("../models/user");
+
 
 const createItem = (req, res) => {
   console.log(req);
@@ -11,7 +13,7 @@ const createItem = (req, res) => {
     name,
     weather,
     imageUrl,
-    owner: req.user._id,
+    owner: req.user._id
   })
     .then((item) => {
       console.log(item);
@@ -42,7 +44,12 @@ const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then(() => res.send({ message: "You deleted an item." }))
+    .then((item) =>{
+    if(String(item.owner) !== res.user._id){
+      res.status(FORBIDDEN).send({message : "You are not authorized to delete this item."})
+    }
+    return res.send({ message: "You deleted an item." })})
+
     .catch((err) => {
       if (err.name === "ValidationError" || err.name === "CastError") {
         res.status(BAD_REQUEST).send({ message: "Invalid Item Id." });
@@ -63,7 +70,10 @@ const likeItem = (req, res) =>
   )
     .orFail()
     .then(() => {
-      res.send({ message: "You liked an item." });
+      if(String(likes.owner) == res.user._id){
+        res.status(FORBIDDEN).send({message : "You already liked this item."})
+      }
+      return res.send({ message: "You liked an item." });
     })
     .catch((err) => {
       if (err.name === "ValidationError" || err.name === "CastError") {
@@ -84,7 +94,10 @@ const dislikeItem = (req, res) =>
   )
     .orFail()
     .then(() => {
-      res.send({ message: "You disliked an item." });
+      if(String(likes.owner) !== res.user._id){
+        res.status(FORBIDDEN).send({message : "You are not authorized to dislike this item."})
+      }
+      return res.send({ message: "You disliked an item." });
     })
     .catch((err) => {
       if (err.name === "ValidationError" || err.name === "CastError") {
