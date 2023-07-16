@@ -1,6 +1,6 @@
 require('dotenv').config();
 console.log(process.env.NODE_ENV);
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET = "SecertCode" } = process.env;
 
-module.exports = JWT_SECRET;
+module.exports = {JWT_SECRET};

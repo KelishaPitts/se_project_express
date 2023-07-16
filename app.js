@@ -1,14 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const helmet = require("helmet");
 const { limiter } = require("./utils/rateLimit");
 const {login, createUser} =  require("./controllers/users")
 const { PORT = 3001 } = process.env;
-
-
-
-const cors = require("cors");
-
+const routes = require("./routes");
+const auth = require("./middlewares/auth.js")
 
 const app = express();
 
@@ -21,14 +19,17 @@ mongoose
     console.log("Database connection error:");
   });
 
+app.use(express.json());
+app.use(cors());
+app.use(limiter);
+app.use(helmet());
+app.use(routes);
 
-const routes = require("./routes");
+
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-app.use(limiter);
-app.use(helmet());
-app.use(express.json());
-app.use(cors());
-app.use(routes);
+
+
+
 app.listen(PORT, () => {});

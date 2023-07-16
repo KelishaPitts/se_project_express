@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
-const token = require("../utils/config");
 const { JWT_SECRET } = require("../utils/config");
+const User = require("../models/user");
+const jwt = require('jsonwebtoken');
 
 const {
   BAD_REQUEST,
@@ -12,24 +13,15 @@ const {
 
 const login = (req, res) => {
   const { email, password } = req.body;
-  if (!password) {
-    return res.status(UNAUTHORIZED).send({ message: "Enter Password" });
-  }
-  if (!email) {
-    return res.status(UNAUTHORIZED).send({ message: "Enter Email" });
-  }
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        return res.status(401).send({ message: "Login failed" });
-      }
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+      return res.send({ token: jwt.sign({ _id: user._id }, JWT_SECRET ,{
         expiresIn: "7d",
-      });
-      res.send({ token });
+      })});
     })
-    .catch(() => {
-      res.status(UNAUTHORIZED).send({ message: "Logon failed" });
+    .catch((err) => {
+      console.log(err)
+      return res.status(UNAUTHORIZED).send({ message: "Login failed" });
     });
 };
 
@@ -38,16 +30,11 @@ const createUser = (req, res) => {
   console.log(req.body);
   const { name, avatar, email, password } = req.body;
 
-  if (!password) {
-    return res.status(UNAUTHORIZED).send({ message: "Enter Password" });
+  if (password === null) {
+    return res.status(BAD_REQUEST).send({ message: "Enter Password" });
   }
-  if (!email) {
-    return res.status(UNAUTHORIZED).send({ message: "Enter Email" });
-  }
-  if (31 > name.length < 2) {
-    return res
-      .status(BAD_REQUEST)
-      .send({ message: "Name must be at least 2 characters long" });
+  if (email === null || !email) {
+    return res.status(BAD_REQUEST).send({ message: "Enter Email" });
   }
   User.findOne({ email }).then((user) => {
     if (user) {
@@ -64,7 +51,9 @@ const createUser = (req, res) => {
           });
         })
         .then((user) => {
-          res.send({ name, avatar, _id: user._id, email: user.email });
+          delete user.password
+          return res.send({ name, avatar, _id: user._id, email: user.email });
+
         })
         .catch((err) => {
           if (err.name === "ValidationError") {
@@ -80,12 +69,14 @@ const createUser = (req, res) => {
     }
   });
 };
-
+/*
 const getCurrentUser = (req, res) => {
+
   User.findById(req.user._id)
     .orFail()
     .then((item) => res.send({ data: item }))
     .catch((err) => {
+      console.log(err)
       if (err.name === "ValidationError" || err.name === "CastError") {
         res
           .status(BAD_REQUEST)
@@ -97,6 +88,35 @@ const getCurrentUser = (req, res) => {
       }
     });
 };
+*/
+
+const getCurrentUser = (req, res) => {
+  const token = req.headers.authorization;
+  try {
+    const decodedToken = jwt.verify(token, JWT_SECRET);
+    const userId = decodedToken.user._id;
+    console.log("id" + userId)
+    User.findById(userId)
+      .orFail()
+      .then((item) => res.send({ data: item }))
+      .catch((err) => {
+        console.log("get user" + err);
+        if (err.name === 'ValidationError' || err.name === 'CastError') {
+          res
+            .status(BAD_REQUEST)
+            .send({ message: 'Invalid data passed through getCurrentUser.' });
+        } else if (err.name === 'DocumentNotFoundError') {
+          res.status(NOT_FOUND).send({ message: 'User with that ID not found.' });
+        } else {
+          res.status(SERVER_ERROR).send({ message: 'Server Error' });
+        }
+      });
+  } catch (err) {
+    res.status(UNAUTHORIZED).send({ message: 'Invalid or expired token' });
+  }
+};
+
+
 
 const updateProfile = (req, res) => {
   User.findOneAndUpdate(

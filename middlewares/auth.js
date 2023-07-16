@@ -4,7 +4,7 @@ const { jwt } = require("jsonwebtoken");
 
 const handleAuthError = (res) => {
   res
-    .status(401)
+    .status(UNAUTHORIZED)
     .send({ message: 'Authorization Error' });
 };
 
