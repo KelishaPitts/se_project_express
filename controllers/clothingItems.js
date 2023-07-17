@@ -50,7 +50,7 @@ const deleteItem = (req, res) => {
       res.status(FORBIDDEN).send({message : `You are not authorized to delete this item. ${item.owner}`})
     }
     return item.deleteOne().then(()=>{
-      res.status.send({ message: "You disliked an item." })
+      res.send({ message: "You disliked an item." })
     })})
     .catch((err) => {
       console.log(err)
@@ -77,7 +77,7 @@ const likeItem = (req, res) =>{
     .then((likes) => {
       if(String(likes.owner) == ( req.user._id))
 
-      return res.status.send({ message: "You liked an item." });
+      return res.send({ message: "You liked an item." });
     })
     .catch((err) => {
       console.log(err + `${itemId}`)
@@ -105,7 +105,7 @@ const dislikeItem = (req, res) =>{
     .then((likes) => {
       if(String(likes.owner) == req.user._id){
       return item.deleteOne().then(()=>{
-      res.status.send({ message: "You disliked an item." });
+      res.send({ message: "You disliked an item." });
       }
     )}})
     .catch((err) => {
