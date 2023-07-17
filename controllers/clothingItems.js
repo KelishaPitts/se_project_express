@@ -95,31 +95,32 @@ const likeItem = (req, res) =>{
 
 
 
-const dislikeItem = (req, res) =>{
-  const { itemId } = req.params
-  ClothingItem.findByIdAndUpdate(
-    {_id: itemId},
-    {$pull: {likes: req.user._id}}
-  )
-    .orFail()
-    .then((likes) => {
-      if(String(likes.owner) == req.user._id){
-      return item.deleteOne().then(()=>{
-      res.send({ message: "You disliked an item." });
-      }
-    )}})
-    .catch((err) => {
-      console.log(err.name)
-      if (err.name === "ValidationError" || err.name === "CastError") {
-        res.status(BAD_REQUEST).send({ message: "Invalid Id." });
-      } else if (err.name === "DocumentNotFoundError") {
-        res.status(NOT_FOUND).send({ message: "Id not found." });
-      } else {
-        res
-          .status(SERVER_ERROR)
-          .send({ message: "Server Error from dislikedItem" });
-      }
-    });}
+  const dislikeItem = (req, res) => {
+    const { itemId } = req.params;
+    ClothingItem.findByIdAndUpdate(
+      { _id: itemId },
+      { $pull: { likes: req.user._id } }
+    )
+      .orFail()
+      .then((likes) => {
+        if (String(likes.owner) === String(req.user._id)) {
+          return likes.deleteOne().then(() => {
+            res.send({ message: "You disliked an item." });
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.name === "ValidationError" || err.name === "CastError") {
+          res.status(BAD_REQUEST).send({ message: "Invalid Id." });
+        } else {
+          res
+            .status(SERVER_ERROR)
+            .send({ message: "Server Error from dislikeItem" });
+        }
+      });
+  };
+
 
 module.exports = {
   createItem,
