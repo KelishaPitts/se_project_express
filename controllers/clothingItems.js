@@ -42,15 +42,18 @@ const getItems = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
-  ClothingItem.findByIdAndDelete(itemId)
+  ClothingItem.findById(itemId)
     .orFail()
     .then((item) =>{
-    if(String(item.owner) !== res.user._id){
-      res.status(FORBIDDEN).send({message : "You are not authorized to delete this item."})
+    if(String(item.owner) !== req.user._id){
+      console.log(item.owner)
+      res.status(FORBIDDEN).send({message : `You are not authorized to delete this item. ${item.owner}`})
     }
-    return res.send({ message: "You deleted an item." })})
-
+    return item.deleteOne().then(()=>{
+      res.status.send({ message: "You disliked an item." })
+    })})
     .catch((err) => {
+      console.log(err)
       if (err.name === "ValidationError" || err.name === "CastError") {
         res.status(BAD_REQUEST).send({ message: "Invalid Item Id." });
       } else if (err.name === "DocumentNotFoundError") {
@@ -62,20 +65,22 @@ const deleteItem = (req, res) => {
       }
     });
 };
-const likeItem = (req, res) =>
-  ClothingItem.findByIdAndUpdate(
-    req.params.itemId,
-    { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
-    { new: true }
-  )
+
+//64b4bc0e8a61f94707d0d73a
+const likeItem = (req, res) =>{
+  const  {itemId}  = req.params
+    ClothingItem.findByIdAndUpdate(
+      { _id: itemId},
+    { $push: { likes: req.user._id} }
+    )
     .orFail()
-    .then(() => {
-      if(String(likes.owner) == res.user._id){
-        res.status(FORBIDDEN).send({message : "You already liked this item."})
-      }
-      return res.send({ message: "You liked an item." });
+    .then((likes) => {
+      if(String(likes.owner) == ( req.user._id))
+
+      return res.status.send({ message: "You liked an item." });
     })
     .catch((err) => {
+      console.log(err + `${itemId}`)
       if (err.name === "ValidationError" || err.name === "CastError") {
         res.status(BAD_REQUEST).send({ message: "Invalid Id." });
       } else if (err.name === "DocumentNotFoundError") {
@@ -86,20 +91,25 @@ const likeItem = (req, res) =>
           .send({ message: "Server Error from likeItem" });
       }
     });
-const dislikeItem = (req, res) =>
+  }
+
+
+
+const dislikeItem = (req, res) =>{
+  const { itemId } = req.params
   ClothingItem.findByIdAndUpdate(
-    req.params.itemId,
-    { $pull: { likes: req.user._id } }, // remove _id from the array
-    { new: true }
+    {_id: itemId},
+    {$pull: {likes: req.user._id}}
   )
     .orFail()
-    .then(() => {
-      if(String(likes.owner) !== res.user._id){
-        res.status(FORBIDDEN).send({message : "You are not authorized to dislike this item."})
+    .then((likes) => {
+      if(String(likes.owner) == req.user._id){
+      return item.deleteOne().then(()=>{
+      res.status.send({ message: "You disliked an item." });
       }
-      return res.send({ message: "You disliked an item." });
-    })
+    )}})
     .catch((err) => {
+      console.log(err.name)
       if (err.name === "ValidationError" || err.name === "CastError") {
         res.status(BAD_REQUEST).send({ message: "Invalid Id." });
       } else if (err.name === "DocumentNotFoundError") {
@@ -109,7 +119,7 @@ const dislikeItem = (req, res) =>
           .status(SERVER_ERROR)
           .send({ message: "Server Error from dislikedItem" });
       }
-    });
+    });}
 
 module.exports = {
   createItem,

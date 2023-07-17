@@ -69,51 +69,36 @@ const createUser = (req, res) => {
     }
   });
 };
-/*
-const getCurrentUser = (req, res) => {
-
-  User.findById(req.user._id)
-    .orFail()
-    .then((item) => res.send({ data: item }))
-    .catch((err) => {
-      console.log(err)
-      if (err.name === "ValidationError" || err.name === "CastError") {
-        res
-          .status(BAD_REQUEST)
-          .send({ message: "Invalid data passed through get Current User." });
-      } else if (err.name === "DocumentNotFoundError") {
-        res.status(NOT_FOUND).send({ message: "User with that Id not found." });
-      } else {
-        res.status(SERVER_ERROR).send({ message: "Server Error" });
-      }
-    });
-};
-*/
 
 const getCurrentUser = (req, res) => {
-  const token = req.headers.authorization;
-  try {
-    const decodedToken = jwt.verify(token, JWT_SECRET);
-    const userId = decodedToken.user._id;
-    console.log("id" + userId)
-    User.findById(userId)
+  const header = req.headers['authorization'];
+
+    const [bearer, token] = header.split(' ');
+    if(!token){
+      console.log(token)
+      res.status(UNAUTHORIZED).send({ message: 'Invalid or expired token' })
+    }
+    User.findById(req.user._id)
       .orFail()
       .then((item) => res.send({ data: item }))
       .catch((err) => {
-        console.log("get user" + err);
+        console.log("get user" + err.name);
         if (err.name === 'ValidationError' || err.name === 'CastError') {
           res
             .status(BAD_REQUEST)
             .send({ message: 'Invalid data passed through getCurrentUser.' });
+        }
+         else if (err.name === "invalid token") {
+          res.status(UNAUTHORIZED).send({ message: 'Invalid or expired token' });
+
         } else if (err.name === 'DocumentNotFoundError') {
           res.status(NOT_FOUND).send({ message: 'User with that ID not found.' });
         } else {
           res.status(SERVER_ERROR).send({ message: 'Server Error' });
         }
       });
-  } catch (err) {
-    res.status(UNAUTHORIZED).send({ message: 'Invalid or expired token' });
-  }
+
+
 };
 
 
@@ -127,6 +112,7 @@ const updateProfile = (req, res) => {
     .orFail()
     .then((item) => res.status.send({ data: item }))
     .catch((err) => {
+      console.log(err.name)
       if (err.name === "ValidationError" || err.name === "CastError") {
         res
           .status(BAD_REQUEST)
