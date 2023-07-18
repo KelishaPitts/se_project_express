@@ -13,7 +13,8 @@ const user = new mongoose.Schema({
   avatar: {
     type: String,
     required: true,
-    default: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Elise.png",
+    default:
+      "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Elise.png",
     validate: {
       validator: (v) => validator.isURL(v),
       message: "Please input an Url",
@@ -29,9 +30,9 @@ const user = new mongoose.Schema({
     validate: {
       validator: (v) => validator.isEmail(v),
       message: "Please input an email",
-    }
+    },
   },
-  password : {
+  password: {
     type: String,
     required: true,
     minLength: 10,
@@ -39,21 +40,24 @@ const user = new mongoose.Schema({
   },
 });
 
-user.statics.findUserByCredentials = function findUserByCredentials (email, password) {
-  return this.findOne({ email }).select('+password')
+user.statics.findUserByCredentials = function findUserByCredentials(
+  email,
+  password
+) {
+  return this.findOne({ email })
+    .select("+password")
     .then((usr) => {
       if (!usr) {
-        return Promise.reject(new Error('Incorrect email or password'));
+        return Promise.reject(new Error("Incorrect email or password"));
       }
 
-      return bcrypt.compare(password, usr.password)
-        .then((matched) => {
-          if (!matched) {
-            return Promise.reject(new Error('Incorrect email or password'));
-          }
+      return bcrypt.compare(password, usr.password).then((matched) => {
+        if (!matched) {
+          return Promise.reject(new Error("Incorrect email or password"));
+        }
 
-          return usr;
-        });
+        return usr;
+      });
     });
 };
 

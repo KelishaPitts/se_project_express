@@ -13,7 +13,8 @@ const {
 const login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
-    .then((user) => res.send({
+    .then((user) =>
+      res.send({
         token: jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" }),
       })
     )
@@ -40,14 +41,14 @@ const createUser = (req, res) => {
     } else {
       bcrypt
         .hash(password, 10)
-        .then((hash) => {
-          return User.create({
+        .then((hash) =>
+          User.create({
             name,
             avatar,
             email,
             password: hash,
-          });
-        })
+          })
+        )
         .then((usr) => {
           delete usr.password;
           return res.send({ name, avatar, _id: usr._id, email: usr.email });
@@ -71,7 +72,7 @@ const getCurrentUser = (req, res) => {
   const header = req.headers.authorization;
 
   const [bearer, token] = header.split(" ");
-  console.log(bearer)
+  console.log(bearer);
   if (!token) {
     console.log(token);
     res.status(UNAUTHORIZED).send({ message: "Invalid or expired token" });
@@ -96,13 +97,12 @@ const getCurrentUser = (req, res) => {
 };
 
 const updateProfile = (req, res) => {
-  User.findOneAndUpdate(
-    { _id: req._id },
-    { newProperty: newProfile },
-    { new: true }
-  )
+  const { name, email, password, avatar } = req.body;
+  User.findByIdAndUpdate(req.user._id, {
+    $set: { name, email, password, avatar },
+  })
     .orFail()
-    .then((item) => res.status.send({ data: item }))
+    .then((item) => res.send({ data: item }))
     .catch((err) => {
       console.log(err.name);
       if (err.name === "ValidationError" || err.name === "CastError") {

@@ -9,8 +9,6 @@ const routes = require("./routes");
 
 const { PORT = 3001 } = process.env;
 
-
-
 const app = express();
 
 mongoose
