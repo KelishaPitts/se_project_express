@@ -28,9 +28,9 @@ const createItem = (req, res) => {
           .status(BAD_REQUEST)
           .send({ message: "Invald data passed into create ClothingItem" });
       }
-        return res
-          .status(SERVER_ERROR)
-          .send({ message: "Server Error from create ClothingItem" });
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "Server Error from create ClothingItem" });
     });
 };
 const getItems = (req, res) => {
@@ -44,7 +44,7 @@ const getItems = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
-  ClothingItem.findById({_id: itemId})
+  ClothingItem.findById({ _id: itemId })
     .orFail()
     .then((item) => {
       if (String(item.owner) !== req.user._id) {
@@ -77,7 +77,8 @@ const likeItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndUpdate(
     { _id: itemId },
-    { $push: { likes: req.user._id }  }, { new : true}
+    { $push: { likes: req.user._id } },
+    { new: true }
   )
     .orFail()
     .then((likes) => {
@@ -102,9 +103,10 @@ const likeItem = (req, res) => {
 
 const dislikeItem = (req, res) => {
   const { itemId } = req.params;
- ClothingItem.findByIdAndUpdate(
+  ClothingItem.findByIdAndUpdate(
     { _id: itemId },
-    { $pull: { likes: req.user._id } },{ new : true}
+    { $pull: { likes: req.user._id } },
+    { new: true }
   )
     .orFail()
     .then(() => res.send({ message: "You disliked an item." }))

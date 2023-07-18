@@ -28,10 +28,6 @@ function createUser(req, res) {
   console.log(req);
   console.log(req.body);
   const { name, avatar, email, password } = req.body;
-
-  if (password === null) {
-    return res.status(BAD_REQUEST).send({ message: "Enter Password" });
-  }
   if (email === null || !email) {
     return res.status(BAD_REQUEST).send({ message: "Enter Email" });
   }
@@ -75,20 +71,13 @@ function createUser(req, res) {
     })
     .catch((err) => {
       console.log(err);
-      return res.status(SERVER_ERROR).send({ message: "Server Error from createUser" });
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "Server Error from createUser" });
     });
 }
 
-
 const getCurrentUser = (req, res) => {
-  const header = req.headers.authorization;
-
-  const [bearer, token] = header.split(" ");
-  console.log(bearer);
-  if (!token) {
-    console.log(token);
-    res.status(UNAUTHORIZED).send({ message: "Invalid or expired token" });
-  }
   User.findById(req.user._id)
     .orFail()
     .then((item) => res.send({ data: item }))
@@ -98,8 +87,6 @@ const getCurrentUser = (req, res) => {
         res
           .status(BAD_REQUEST)
           .send({ message: "Invalid data passed through getCurrentUser." });
-      } else if (err.name === "invalid token") {
-        res.status(UNAUTHORIZED).send({ message: "Invalid or expired token" });
       } else if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND).send({ message: "User with that ID not found." });
       } else {
@@ -109,10 +96,14 @@ const getCurrentUser = (req, res) => {
 };
 
 const updateProfile = (req, res) => {
-  const { name, email, password, avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, {
-    $set: { name, email, password, avatar },
-  })
+  const { name, avatar } = req.body;
+  User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: { name, avatar },
+    },
+    { new: true, runValidators: true }
+  )
     .orFail()
     .then((item) => res.send({ data: item }))
     .catch((err) => {

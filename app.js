@@ -24,13 +24,12 @@ app.use(express.json());
 app.use(cors());
 app.use(limiter);
 app.use(helmet());
-app.use(routes);
-app.patch("/404", (req, res) => {
-  console.log(req);
-  res.status(NOT_FOUND).send({ message: "PATCH /404 route" });
-});
-
 app.post("/signin", login);
 app.post("/signup", createUser);
+app.use(routes);
+app.use("/", (req, res) => {
+  console.log(req);
+  res.status(NOT_FOUND).send({ message: "Requested resource not found" });
+});
 
 app.listen(PORT, () => {});
