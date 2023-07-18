@@ -35,44 +35,50 @@ function createUser(req, res) {
   if (email === null || !email) {
     return res.status(BAD_REQUEST).send({ message: "Enter Email" });
   }
-     User.findOne({ email }).then((currentUser) => {
-    if (currentUser) {
-      return res.status(CONFLICT).send({ message: "User already exists." });
-    }
-   return  bcrypt
-      .hash(password, 10)
-      .then((hash) =>
-        User.create({
-          name,
-          avatar,
-          email,
-          password: hash,
-        })
-      )
-      .then((user) =>
 
-        res.send({
-          data: {
-            name: user.name,
-            avatar: user.avatar,
-            _id: user._id,
-            email: user.email,
-          },
-        })
-      )
-      .catch((err) => {
-        console.log(err);
-        if (err.name === "ValidationError") {
+  return User.findOne({ email })
+    .then((currentUser) => {
+      if (currentUser) {
+        return res.status(CONFLICT).send({ message: "User already exists." });
+      }
+      return bcrypt
+        .hash(password, 10)
+        .then((hash) =>
+          User.create({
+            name,
+            avatar,
+            email,
+            password: hash,
+          })
+        )
+        .then((user) =>
+          res.send({
+            data: {
+              name: user.name,
+              avatar: user.avatar,
+              _id: user._id,
+              email: user.email,
+            },
+          })
+        )
+        .catch((err) => {
+          console.log(err);
+          if (err.name === "ValidationError") {
+            return res
+              .status(BAD_REQUEST)
+              .send({ message: "Invalid data passed through createUser." });
+          }
           return res
-            .status(BAD_REQUEST)
-            .send({ message: "Invalid data passed through createUser." });
-        }
-        return res
-          .status(SERVER_ERROR)
-          .send({ message: "Server Error from createUser" });
-      });
-  });
+            .status(SERVER_ERROR)
+            .send({ message: "Server Error from createUser" });
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(SERVER_ERROR).send({ message: "Server Error from createUser" });
+    });
 }
+
 
 const getCurrentUser = (req, res) => {
   const header = req.headers.authorization;
