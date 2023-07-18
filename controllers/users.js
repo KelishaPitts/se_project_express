@@ -49,14 +49,14 @@ function createUser(req, res) {
             password: hash,
           })
         )
-        .then((user) => {
+        .then((data) => {
           const responseData = {
-            name: user.name,
-            avatar: user.avatar,
-            _id: user._id,
-            email: user.email,
+            name: data.name,
+            avatar: data.avatar,
+            _id: data._id,
+            email: data.email,
           };
-          delete user.password;
+          delete data.password;
           return res.send(responseData);
         })
         .catch((err) => {
@@ -64,14 +64,14 @@ function createUser(req, res) {
             return res
               .status(BAD_REQUEST)
               .send({ message: "Invalid data passed through createUser." });
-          } else {
-            return res
-              .status(SERVER_ERROR)
-              .send({ message: "Server Error from createUser" });
           }
+          return res
+            .status(SERVER_ERROR)
+            .send({ message: "Server Error from createUser" });
         });
     }
   });
+  return;
 }
 
 const getCurrentUser = (req, res) => {
