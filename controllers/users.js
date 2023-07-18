@@ -49,16 +49,17 @@ function createUser(req, res) {
           password: hash,
         })
       )
-      .then((user) => {
-        return res.send({
+      .then((user) =>
+
+        res.send({
           data: {
             name: user.name,
             avatar: user.avatar,
             _id: user._id,
             email: user.email,
           },
-        });
-      })
+        })
+      )
       .catch((err) => {
         console.log(err);
         if (err.name === "ValidationError") {

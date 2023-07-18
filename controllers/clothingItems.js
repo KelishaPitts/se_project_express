@@ -44,11 +44,12 @@ const getItems = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
-  ClothingItem.findById(itemId)
+  ClothingItem.findById({_id: itemId})
     .orFail()
     .then((item) => {
       if (String(item.owner) !== req.user._id) {
         console.log(`owner ${item.owner}`);
+        console.log(`owner ${req}`);
         console.log(`user ${req.user._id}`);
         return res
           .status(FORBIDDEN)
@@ -76,7 +77,7 @@ const likeItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndUpdate(
     { _id: itemId },
-    { $push: { likes: req.user._id } }
+    { $push: { likes: req.user._id }  }, { new : true}
   )
     .orFail()
     .then((likes) => {
@@ -101,9 +102,11 @@ const likeItem = (req, res) => {
 
 const dislikeItem = (req, res) => {
   const { itemId } = req.params;
-  ClothingItem.findById({ _id: itemId })
+ ClothingItem.findByIdAndUpdate(
+    { _id: itemId },
+    { $pull: { likes: req.user._id } },{ new : true}
+  )
     .orFail()
-    .then((likes) => likes.deleteOne())
     .then(() => res.send({ message: "You disliked an item." }))
     .catch((err) => {
       console.log(err);
