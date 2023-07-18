@@ -10,6 +10,7 @@ const {
   SERVER_ERROR,
 } = require("../utils/errors");
 
+
 const login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
@@ -48,10 +49,10 @@ function createUser(req, res) {
           email,
           password: hash,
         })
-      )
-      .then((user) => {
-        delete {password: user.password};
-        return res.send({
+      ).then((user)=> {
+      const {newPassword}= user.password
+      delete newPassword
+          res.send({
           data: {name: user.name, avatar: user.avatar, _id: user._id ,email: user.email}
         });
       })
