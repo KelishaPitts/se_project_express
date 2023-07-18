@@ -35,8 +35,8 @@ function createUser(req, res) {
   if (email === null || !email) {
     return res.status(BAD_REQUEST).send({ message: "Enter Email" });
   }
-  User.findOne({ email }).then((user) => {
-    if (user) {
+  User.findOne({ email }).then((currentUser) => {
+    if (currentUser) {
       return res.status(CONFLICT).send({ message: "User already exists." });
     }
        bcrypt
