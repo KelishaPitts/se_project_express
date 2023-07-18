@@ -50,7 +50,7 @@ function createUser(req, res) {
         })
       )
       .then((user) => {
-        res.send({
+        return res.send({
           data: {
             name: user.name,
             avatar: user.avatar,
