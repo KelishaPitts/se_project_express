@@ -50,9 +50,9 @@ function createUser(req, res) {
         })
       )
       .then((user) => {
-        delete user.password;
+        delete {password: user.password};
         return res.send({
-          name: user.name, avatar: user.avatar, _id: user._id ,email: user.email
+          data: {name: user.name, avatar: user.avatar, _id: user._id ,email: user.email}
         });
       })
       .catch((err) => {
