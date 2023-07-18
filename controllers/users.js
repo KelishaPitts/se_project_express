@@ -10,7 +10,6 @@ const {
   SERVER_ERROR,
 } = require("../utils/errors");
 
-
 const login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
@@ -36,11 +35,11 @@ function createUser(req, res) {
   if (email === null || !email) {
     return res.status(BAD_REQUEST).send({ message: "Enter Email" });
   }
-  User.findOne({ email }).then((currentUser) => {
+  return User.findOne({ email }).then((currentUser) => {
     if (currentUser) {
       return res.status(CONFLICT).send({ message: "User already exists." });
     }
-       bcrypt
+    bcrypt
       .hash(password, 10)
       .then((hash) =>
         User.create({
@@ -49,13 +48,19 @@ function createUser(req, res) {
           email,
           password: hash,
         })
-      ).then((user)=> {
-          res.send({
-          data: {name: user.name, avatar: user.avatar, _id: user._id ,email: user.email}
+      )
+      .then((user) => {
+        return res.send({
+          data: {
+            name: user.name,
+            avatar: user.avatar,
+            _id: user._id,
+            email: user.email,
+          },
         });
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
         if (err.name === "ValidationError") {
           return res
             .status(BAD_REQUEST)
