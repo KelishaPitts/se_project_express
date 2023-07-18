@@ -1,8 +1,7 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 const User = require("../models/user");
-const jwt = require('jsonwebtoken');
-
 const {
   BAD_REQUEST,
   UNAUTHORIZED,
@@ -14,13 +13,12 @@ const {
 const login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
-    .then((user) => {
-      return res.send({ token: jwt.sign({ _id: user._id }, JWT_SECRET ,{
-        expiresIn: "7d",
-      })});
-    })
+    .then((user) => res.send({
+        token: jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" }),
+      })
+    )
     .catch((err) => {
-      console.log(err)
+      console.log(err);
       return res.status(UNAUTHORIZED).send({ message: "Login failed" });
     });
 };
@@ -51,9 +49,8 @@ const createUser = (req, res) => {
           });
         })
         .then((user) => {
-          delete user.password
+          delete user.password;
           return res.send({ name, avatar, _id: user._id, email: user.email });
-
         })
         .catch((err) => {
           if (err.name === "ValidationError") {
@@ -71,37 +68,31 @@ const createUser = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const header = req.headers['authorization'];
+  const header = req.headers.authorization;
 
-    const [bearer, token] = header.split(' ');
-    if(!token){
-      console.log(token)
-      res.status(UNAUTHORIZED).send({ message: 'Invalid or expired token' })
-    }
-    User.findById(req.user._id)
-      .orFail()
-      .then((item) => res.send({ data: item }))
-      .catch((err) => {
-        console.log("get user" + err.name);
-        if (err.name === 'ValidationError' || err.name === 'CastError') {
-          res
-            .status(BAD_REQUEST)
-            .send({ message: 'Invalid data passed through getCurrentUser.' });
-        }
-         else if (err.name === "invalid token") {
-          res.status(UNAUTHORIZED).send({ message: 'Invalid or expired token' });
-
-        } else if (err.name === 'DocumentNotFoundError') {
-          res.status(NOT_FOUND).send({ message: 'User with that ID not found.' });
-        } else {
-          res.status(SERVER_ERROR).send({ message: 'Server Error' });
-        }
-      });
-
-
+  const [bearer, token] = header.split(" ");
+  if (!token) {
+    console.log(token);
+    res.status(UNAUTHORIZED).send({ message: "Invalid or expired token" });
+  }
+  User.findById(req.user._id)
+    .orFail()
+    .then((item) => res.send({ data: item }))
+    .catch((err) => {
+      console.log("get user" + err.name);
+      if (err.name === "ValidationError" || err.name === "CastError") {
+        res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid data passed through getCurrentUser." });
+      } else if (err.name === "invalid token") {
+        res.status(UNAUTHORIZED).send({ message: "Invalid or expired token" });
+      } else if (err.name === "DocumentNotFoundError") {
+        res.status(NOT_FOUND).send({ message: "User with that ID not found." });
+      } else {
+        res.status(SERVER_ERROR).send({ message: "Server Error" });
+      }
+    });
 };
-
-
 
 const updateProfile = (req, res) => {
   User.findOneAndUpdate(
@@ -112,7 +103,7 @@ const updateProfile = (req, res) => {
     .orFail()
     .then((item) => res.status.send({ data: item }))
     .catch((err) => {
-      console.log(err.name)
+      console.log(err.name);
       if (err.name === "ValidationError" || err.name === "CastError") {
         res
           .status(BAD_REQUEST)

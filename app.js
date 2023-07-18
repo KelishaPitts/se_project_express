@@ -3,11 +3,13 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const helmet = require("helmet");
 const { limiter } = require("./utils/rateLimit");
-const {login, createUser} =  require("./controllers/users")
-const { PORT = 3001 } = process.env;
+const { login, createUser } = require("./controllers/users");
+const { NOT_FOUND } = require("./utils/errors");
 const routes = require("./routes");
-const auth = require("./middlewares/auth.js")
-const { NOT_FOUND} = require("./utils/errors");
+
+const { PORT = 3001 } = process.env;
+
+
 
 const app = express();
 
@@ -25,15 +27,12 @@ app.use(cors());
 app.use(limiter);
 app.use(helmet());
 app.use(routes);
-app.patch('/404', (req, res) => {
-  console.log(req)
-  res.status(NOT_FOUND).send({message:'PATCH /404 route'});
+app.patch("/404", (req, res) => {
+  console.log(req);
+  res.status(NOT_FOUND).send({ message: "PATCH /404 route" });
 });
 
-app.post('/signin', login);
-app.post('/signup', createUser);
-
-
-
+app.post("/signin", login);
+app.post("/signup", createUser);
 
 app.listen(PORT, () => {});
