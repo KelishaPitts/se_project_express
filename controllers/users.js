@@ -50,8 +50,6 @@ function createUser(req, res) {
           password: hash,
         })
       ).then((user)=> {
-      const {newPassword}= user.password
-      delete newPassword
           res.send({
           data: {name: user.name, avatar: user.avatar, _id: user._id ,email: user.email}
         });
