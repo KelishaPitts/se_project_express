@@ -35,11 +35,11 @@ function createUser(req, res) {
   if (email === null || !email) {
     return res.status(BAD_REQUEST).send({ message: "Enter Email" });
   }
-  return User.findOne({ email }).then((currentUser) => {
+     User.findOne({ email }).then((currentUser) => {
     if (currentUser) {
       return res.status(CONFLICT).send({ message: "User already exists." });
     }
-    bcrypt
+   return  bcrypt
       .hash(password, 10)
       .then((hash) =>
         User.create({
@@ -50,7 +50,7 @@ function createUser(req, res) {
         })
       )
       .then((user) => {
-        return res.send({
+        res.send({
           data: {
             name: user.name,
             avatar: user.avatar,
