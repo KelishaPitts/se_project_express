@@ -24,7 +24,7 @@ const login = (req, res) => {
     });
 };
 
-  function createUser(req, res){
+function createUser(req, res) {
   console.log(req);
   console.log(req.body);
   const { name, avatar, email, password } = req.body;
@@ -50,23 +50,29 @@ const login = (req, res) => {
           })
         )
         .then((user) => {
+          const responseData = {
+            name: user.name,
+            avatar: user.avatar,
+            _id: user._id,
+            email: user.email,
+          };
           delete user.password;
-          return res.send({ name, avatar, _id: user._id, email: user.email });
+          return res.send(responseData);
         })
         .catch((err) => {
           if (err.name === "ValidationError") {
-            res
+            return res
               .status(BAD_REQUEST)
               .send({ message: "Invalid data passed through createUser." });
           } else {
-            res
+            return res
               .status(SERVER_ERROR)
               .send({ message: "Server Error from createUser" });
           }
         });
     }
   });
-};
+}
 
 const getCurrentUser = (req, res) => {
   const header = req.headers.authorization;
