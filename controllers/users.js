@@ -24,7 +24,7 @@ const login = (req, res) => {
     });
 };
 
-const createUser = (req, res) => {
+  function createUser(req, res){
   console.log(req);
   console.log(req.body);
   const { name, avatar, email, password } = req.body;
@@ -35,8 +35,8 @@ const createUser = (req, res) => {
   if (email === null || !email) {
     return res.status(BAD_REQUEST).send({ message: "Enter Email" });
   }
-  User.findOne({ email }).then((usr) => {
-    if (usr) {
+  User.findOne({ email }).then((user) => {
+    if (user) {
       res.status(CONFLICT).send({ message: "User already exists." });
     } else {
       bcrypt
@@ -49,9 +49,9 @@ const createUser = (req, res) => {
             password: hash,
           })
         )
-        .then((usr) => {
-          delete usr.password;
-          return res.send({ name, avatar, _id: usr._id, email: usr.email });
+        .then((user) => {
+          delete user.password;
+          return res.send({ name, avatar, _id: user._id, email: user.email });
         })
         .catch((err) => {
           if (err.name === "ValidationError") {

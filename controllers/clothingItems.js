@@ -24,14 +24,13 @@ const createItem = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res
+        return res
           .status(BAD_REQUEST)
           .send({ message: "Invald data passed into create ClothingItem" });
-      } else {
-        res
+      }
+        return res
           .status(SERVER_ERROR)
           .send({ message: "Server Error from create ClothingItem" });
-      }
     });
 };
 const getItems = (req, res) => {
