@@ -37,41 +37,36 @@ function createUser(req, res) {
   }
   User.findOne({ email }).then((user) => {
     if (user) {
-      res.status(CONFLICT).send({ message: "User already exists." });
-    } else {
-      bcrypt
-        .hash(password, 10)
-        .then((hash) =>
-          User.create({
-            name,
-            avatar,
-            email,
-            password: hash,
-          })
-        )
-        .then((data) => {
-          const responseData = {
-            name: data.name,
-            avatar: data.avatar,
-            _id: data._id,
-            email: data.email,
-          };
-          delete data.password;
-          return res.send(responseData);
-        })
-        .catch((err) => {
-          if (err.name === "ValidationError") {
-            return res
-              .status(BAD_REQUEST)
-              .send({ message: "Invalid data passed through createUser." });
-          }
-          return res
-            .status(SERVER_ERROR)
-            .send({ message: "Server Error from createUser" });
-        });
+      return res.status(CONFLICT).send({ message: "User already exists." });
     }
+       bcrypt
+      .hash(password, 10)
+      .then((hash) =>
+        User.create({
+          name,
+          avatar,
+          email,
+          password: hash,
+        })
+      )
+      .then((user) => {
+        delete user.password;
+        return res.send({
+          name: user.name, avatar: user.avatar, _id: user._id ,email: user.email
+        });
+      })
+      .catch((err) => {
+        console.log(err)
+        if (err.name === "ValidationError") {
+          return res
+            .status(BAD_REQUEST)
+            .send({ message: "Invalid data passed through createUser." });
+        }
+        return res
+          .status(SERVER_ERROR)
+          .send({ message: "Server Error from createUser" });
+      });
   });
-  return;
 }
 
 const getCurrentUser = (req, res) => {
