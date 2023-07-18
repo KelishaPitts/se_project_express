@@ -54,12 +54,12 @@ const deleteItem = (req, res) => {
         return res
           .status(FORBIDDEN)
           .send({ message: `You are not authorized to delete this item.` });
-      } else {
+        }
         return item.deleteOne().then(() => {
           res.send({ message: "Item deleted successfully." });
         });
       }
-    })
+    )
     .catch((err) => {
       console.log(err);
       if (err.name === "CastError") {
@@ -105,14 +105,9 @@ const dislikeItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findById({ _id: itemId })
     .orFail()
-    .then((likes) => {
-      if (String(likes.owner) === String(req.user._id)) {
-        return likes.deleteOne();
-      }
-    })
-    .then(() => {
-      return res.send({ message: "You disliked an item." });
-    })
+    .then((likes) => likes.deleteOne()
+    )
+    .then(() => res.send({ message: "You disliked an item." }))
     .catch((err) => {
       console.log(err);
       if (err.name === "ValidationError" || err.name === "CastError") {

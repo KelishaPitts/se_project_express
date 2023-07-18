@@ -34,8 +34,8 @@ const createUser = (req, res) => {
   if (email === null || !email) {
     return res.status(BAD_REQUEST).send({ message: "Enter Email" });
   }
-  User.findOne({ email }).then((user) => {
-    if (user) {
+  User.findOne({ email }).then((usr) => {
+    if (usr) {
       res.status(CONFLICT).send({ message: "User already exists." });
     } else {
       bcrypt
@@ -48,9 +48,9 @@ const createUser = (req, res) => {
             password: hash,
           });
         })
-        .then((user) => {
-          delete user.password;
-          return res.send({ name, avatar, _id: user._id, email: user.email });
+        .then((usr) => {
+          delete usr.password;
+          return res.send({ name, avatar, _id: usr._id, email: usr.email });
         })
         .catch((err) => {
           if (err.name === "ValidationError") {
@@ -71,6 +71,7 @@ const getCurrentUser = (req, res) => {
   const header = req.headers.authorization;
 
   const [bearer, token] = header.split(" ");
+  console.log(bearer)
   if (!token) {
     console.log(token);
     res.status(UNAUTHORIZED).send({ message: "Invalid or expired token" });
@@ -79,7 +80,7 @@ const getCurrentUser = (req, res) => {
     .orFail()
     .then((item) => res.send({ data: item }))
     .catch((err) => {
-      console.log("get user" + err.name);
+      console.log(err.name);
       if (err.name === "ValidationError" || err.name === "CastError") {
         res
           .status(BAD_REQUEST)
