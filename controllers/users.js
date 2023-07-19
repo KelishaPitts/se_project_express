@@ -28,7 +28,7 @@ function createUser(req, res) {
   console.log(req);
   console.log(req.body);
   const { name, avatar, email, password } = req.body;
-  if (email === null || !email) {
+  if (!email) {
     return res.status(BAD_REQUEST).send({ message: "Enter Email" });
   }
 
