@@ -77,7 +77,7 @@ const likeItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndUpdate(
     { _id: itemId },
-    { $push: { likes: req.user._id } },
+    { $addToSet: { likes: req.user._id } },
     { new: true }
   )
     .orFail()
