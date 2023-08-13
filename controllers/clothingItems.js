@@ -83,7 +83,7 @@ const likeItem = (req, res) => {
     .orFail()
     .then((likes) => {
       if (String(likes.owner) === req.user._id) {
-        return res.send({ message: "You liked an item." });
+        return res.send(likes);
       }
       return res.send({ message: "You already liked this item." });
     })
@@ -109,7 +109,8 @@ const dislikeItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then(() => res.send({ message: "You disliked an item." }))
+    .then((likes) =>
+    res.send(likes))
     .catch((err) => {
       console.log(err);
       if (err.name === "ValidationError" || err.name === "CastError") {
