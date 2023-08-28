@@ -34,11 +34,20 @@ mongoose
     console.log("Database connection error:");
   });
 
+
+
 app.use(express.json());
 app.use(requestLogger);
 app.use(cors());
 app.use(limiter);
 app.use(helmet());
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server will crash now');
+  }, 0);
+});
+
 app.post("/signin", validateLogin, login);
 app.post("/signup", validateUserBody, createUser);
 app.use(routes);
