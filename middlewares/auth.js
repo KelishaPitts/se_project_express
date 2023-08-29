@@ -1,16 +1,9 @@
 const jwt = require("jsonwebtoken");
-const { UNAUTHORIZED } = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
-const {errorMiddleware,
-  BadRequestError,
-  UnauthorizedError,
-  ForbiddenError,
-  NotFoundError,
-  ConflictError } = require("../middlewares/error.js");
+const { UnauthorizedError } = require("../error_classes/UnauthorizedError");
 
-const handleAuthError = () =>
-  next(UnauthorizedError("Authorization Error"))
-  //res.status(UNAUTHORIZED).send({ message: "Authorization Error" });
+const handleAuthError = (next) =>
+  next(new UnauthorizedError("Authorization Error"));
 
 const extractBearerToken = (header) => header.replace("Bearer ", "");
 

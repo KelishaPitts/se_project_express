@@ -1,4 +1,4 @@
-# Project 13 WTWR (What to Wear?): Back End
+# Project 15 WTWR (What to Wear?): Back End
 
 ## Description
 
@@ -32,4 +32,5 @@
 - Users can no longer delete other users items\
 - Users can now like and unlike items.
 
-Domainname: wwww.wtwr.k-zone.com
+
+Domainname: www.wtwr.k-zone.com
