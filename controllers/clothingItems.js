@@ -65,10 +65,11 @@ const likeItem = (req, res, next) => {
   )
     .orFail()
     .then((likes) => {
-      if (String(likes.owner) === req.user._id) {
-        return res.send(likes);
+      if (!likes) {
+       next(new NotFoundError("Like is not found"));
       }
-      return res.send({ message: "You already liked this item." });
+      return res.send(likes);
+
     })
     .catch((err) => {
       if (err.name === "ValidationError" || err.name === "CastError") {
