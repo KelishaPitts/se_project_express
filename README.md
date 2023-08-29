@@ -7,7 +7,7 @@
 - New users can signup for an account based on a unique email. \
 - Accounts are password protected\
 - Current users can login into their account with required email and password fields\
-- User can update thier avatar and name.\
+- User can update their avatar and name.\
 - Users can add new and delete their clothing items\
 - Users can like and dislike clothing items\
 - Users are prevented from deleting other users items
@@ -20,7 +20,7 @@
 - RestAPI\
 - MongoDB\
 - jwt tokens \
-- middleware aauthentification\
+- middleware authentification\
 - Tested with Postman
 
 ## Updates
@@ -31,3 +31,5 @@
 - Added in User protections.\
 - Users can no longer delete other users items\
 - Users can now like and unlike items.
+
+Domainname: wwww.wtwr.k-zone.com
