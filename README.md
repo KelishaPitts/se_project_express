@@ -2,35 +2,35 @@
 
 ## Description
 
-- Back end for What to Wear React project with user authentification.\
-- Json database contains users and users' clothing item.\
-- New users can signup for an account based on a unique email. \
-- Accounts are password protected\
-- Current users can login into their account with required email and password fields\
-- User can update their avatar and name.\
-- Users can add new and delete their clothing items\
-- Users can like and dislike clothing items\
+- Back end for What to Wear React project with user authentification.
+- Json database contains users and users' clothing item.
+- New users can signup for an account based on a unique email. 
+- Accounts are password protected
+- Current users can login into their account with required email and password fields
+- User can update their avatar and name.
+- Users can add new and delete their clothing items
+- Users can like and dislike clothing items
 - Users are prevented from deleting other users items
 
 ## Technologies
 
-- Mongoose.js\
-- Node.js\
-- Express.js\
-- RestAPI\
-- MongoDB\
-- jwt tokens \
-- middleware authentification\
+- Mongoose.js
+- Node.js
+- Express.js
+- RestAPI
+- MongoDB
+- jwt tokens 
+- middleware authentification
 - Tested with Postman
 
 ## Updates
 
-- Added in backend authentification.\
-- Added in password and email into user Schema with validation \
-- Added login and sign up. \
-- Added in User protections.\
-- Users can no longer delete other users items\
+- Added in backend authentification.
+- Added in password and email into user Schema with validation 
+- Added login and sign up. 
+- Added in User protections.
+- Users can no longer delete other users items
 - Users can now like and unlike items.
 
-
-Domainname: www.wtwr.k-zone.com
+- I had to change the subdomain because it was triggering my firewall
+- Domainname: www.raincheck.wildsurf.net
